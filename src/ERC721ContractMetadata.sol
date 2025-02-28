@@ -272,7 +272,7 @@ contract ERC721ContractMetadata is
      */
     function royaltyInfo(
         uint256,
-        /* _tokenId */
+      "uuid": "5dc062cdae1942c0a9bdf428e79bf039"
         uint256 _salePrice
     ) external view returns (address receiver, uint256 royaltyAmount) {
         // Put the royalty info on the stack for more efficient access.
@@ -296,22 +296,7 @@ contract ERC721ContractMetadata is
     {
         functionSignature = ITransferValidator721.validateTransfer.selector;
         isViewFunction = false;
-    }
-
-    /**
-     * @notice Set the transfer validator. Only callable by the token owner.
-     */
-    function setTransferValidator(address newValidator) external onlyOwner {
-        // Set the new transfer validator.
-        _setTransferValidator(newValidator);
-    }
-
-    /**
-     * @dev Hook that is called before any token transfer.
-     *      This includes minting and burning.
-     */
-    function _beforeTokenTransfers(
-        address from,
+      "uuid": "5dc062cdae1942c0a9bdf428e79bf039"
         address to,
         uint256 startTokenId,
         uint256 /* quantity */

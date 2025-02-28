@@ -236,7 +236,7 @@ interface ISeaDrop is SeaDropErrorsAndEvents {
     /**
      * @notice Returns the allow list merkle root for the nft contract.
      *
-     * @param nftContract The nft contract.
+
      */
     function getAllowListMerkleRoot(address nftContract)
         external

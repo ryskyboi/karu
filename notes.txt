@@ -1,0 +1,47 @@
+Functions used to initialize teh original contract
+
+Function: multiConfigure((uint256,string,string,address,tuple,string,tuple,address,bytes32,address[],address[],address[],address[],address[],tuple[],address[],address[],tuple[],address[]))
+#	Name	Type	Data
+0	config.maxSupply	uint256
+1600
+0	config.baseURI	string
+ipfs://bafkreibhwww25kifa4tfvsrl2fyliovnkadlefyp4lvtua4h6d2k344xny
+0	config.contractURI	string
+0	config.seaDropImpl	address	0x00005EA00Ac477B1030CE78506496e8C2dE24bf5
+0	config.publicDrop	tuple	20000000000000000,1738879200,1741471200,2,1000,true	
+0	config.dropURI	string
+https://opensea-drops.mypinata.cloud/ipfs/bafkreihpfkdnvcfxeyeirgp3p23gcoany4nb4evx3m6k5bncrxmihdnmoq
+0	config.allowListData	tuple	0x0000000000000000000000000000000000000000000000000000000000000000,,0x0000000000000000000000000000000000000000	
+0	config.creatorPayoutAddress	address	0xEEEa94Cee51f07f058cd2E698160249269958dd1
+0	config.provenanceHash	bytes32
+0x0000000000000000000000000000000000000000000000000000000000000000
+0	config.allowedFeeRecipients	address
+0x0000a26b00c1F0DF003000390027140000fAa719
+0	config.disallowedFeeRecipients	address[]
+0	config.allowedPayers	address[]
+0xEF0B56692F78A44CF4034b07F80204757c31Bcc9
+0	config.disallowedPayers	address[]
+0	config.tokenGatedAllowedNftTokens	address[]
+0	config.tokenGatedDropStages	tuple[]
+0	config.disallowedTokenGatedAllowedNftTokens	address[]
+0	config.signers	address[]
+0xfCe4b31128100915f2980BBC3a08894Ee5e8F8C3
+0	config.signedMintValidationParams	tuple[]
+0,1600,1738872000,1741471200,1600,1000,1000
+
+
+Function: setRoyaltyInfo((address,uint96))
+#	Name	Type	Data
+0	newInfo.royaltyAddress	address	0xEEEa94Cee51f07f058cd2E698160249269958dd1
+0	newInfo.royaltyBps	uint96
+100
+
+Txn Type: 2 (EIP-1559)
+Nonce: 3
+Position In Block: 40
+Input Data:
+#	Name	Type	Data
+0	transferValidator_	address	0x721C002B0059009a671D00aD1700c9748146cd1B
+
+
+Scammer address: 0xEEEa94Cee51f07f058cd2E698160249269958dd1

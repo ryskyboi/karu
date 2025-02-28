@@ -476,8 +476,7 @@ contract ERC721A is IERC721A {
      * @dev Returns whether `tokenId` exists.
      *
      * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
-     *
-     * Tokens start existing when they are minted. See {_mint}.
+     *_BITPOS_NUMBER_MINTED
      */
     function _exists(uint256 tokenId) internal view virtual returns (bool) {
         return
