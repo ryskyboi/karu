@@ -18,6 +18,8 @@ contract BurnToMintSeaDrop {
     /// @notice Address of the NFT contract to mint tokens to
     address public immutable nftContract;
 
+    uint256[] public blackListedTokens;
+
     /// @notice Mapping to track if a token has been minted using this mechanism
     mapping(uint256 => bool) public tokenIdRedeemed;
 
@@ -29,13 +31,13 @@ contract BurnToMintSeaDrop {
     );
 
     /// @dev Constructor to set the burn token contract address
-    constructor(address _burnTokenContract, address  _nftContract) {
+    constructor(address _burnTokenContract, address  _nftContract, uint256[] memory _blackListedTokens) {
+        blackListedTokens = _blackListedTokens;
         nftContract = _nftContract;
         burnTokenContract = _burnTokenContract;
     }
 
-    function mintAll(
-    ) internal {
+    function mintAll() internal {
         //This will mint all the tokens to the contract address
         INonFungibleSeaDropToken(nftContract).mintSeaDrop(address(this), IERC721A(nftContract).totalSupply());
     }
@@ -50,6 +52,11 @@ contract BurnToMintSeaDrop {
     ) external {
         // Check that the token hasn't already been redeemed
         require(!tokenIdRedeemed[burnTokenId], "Token already redeemed");
+
+        // Check that the token is not blacklisted
+        for (uint256 i = 0; i < blackListedTokens.length; i++) {
+            require(burnTokenId != blackListedTokens[i], "Token is blacklisted");
+        }
 
         // Check that the caller owns the token to be burned
         require(
@@ -72,5 +79,9 @@ contract BurnToMintSeaDrop {
             msg.sender,
             burnTokenId
         );
+    }
+
+    function setBlackListedTokens(uint256[] memory _blackListedTokens) external {
+        blackListedTokens = _blackListedTokens;
     }
 }
