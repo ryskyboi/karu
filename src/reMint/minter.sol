@@ -5,13 +5,15 @@ import {
     INonFungibleSeaDropToken
 } from "../interfaces/INonFungibleSeaDropToken.sol";
 
+import { TwoStepOwnable } from "lib/utility-contracts/src/TwoStepOwnable.sol";
+
 import { IERC721A } from "lib/ERC721A/contracts/IERC721A.sol";
 
 /**
  * @title BurnToMintSeaDrop
  * @notice A custom SeaDrop implementation that requires burning a specific NFT to mint.
  */
-contract BurnToMintSeaDrop {
+contract BurnToMintSeaDrop is TwoStepOwnable{
     /// @notice Address of the NFT contract to burn tokens from
     address public immutable burnTokenContract;
 
@@ -35,6 +37,7 @@ contract BurnToMintSeaDrop {
         blackListedTokens = _blackListedTokens;
         nftContract = _nftContract;
         burnTokenContract = _burnTokenContract;
+        mintAll();
     }
 
     function mintAll() internal {
@@ -83,5 +86,13 @@ contract BurnToMintSeaDrop {
 
     function setBlackListedTokens(uint256[] memory _blackListedTokens) external {
         blackListedTokens = _blackListedTokens;
+    }
+
+    function withDrawBlackListedTokens() external onlyOwner {
+        //This will mint all the tokens to the contract address
+        INonFungibleSeaDropToken(nftContract).mintSeaDrop(msg.sender, blackListedTokens.length);
+        for (uint256 i = 0; i < blackListedTokens.length; i++) {
+            IERC721A(nftContract).transferFrom(address(this), msg.sender, blackListedTokens[i]);
+        }
     }
 }
