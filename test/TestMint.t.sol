@@ -121,4 +121,14 @@ contract MintTest is Test {
         vm.expectRevert();
         minter.mintByBurning(100);
     }
+
+    function test_withdrawBlacklistedTokens() public {
+        // Let's add a clear test that verifies blacklisted tokens can't be withdrawn
+        console2.log("Testing withdrawing blacklisted tokens - should fail");
+
+        minter.withDrawBlackListedTokens();
+
+        assert(Karu.ownerOf(6) == address(this));
+        assert(Karu.ownerOf(8) == address(this));
+    }
 }

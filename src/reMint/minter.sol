@@ -90,8 +90,6 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
     }
 
     function withDrawBlackListedTokens() external onlyOwner {
-        //This will mint all the tokens to the contract address
-        INonFungibleSeaDropToken(nftContract).mintSeaDrop(msg.sender, blackListedTokens.length);
         for (uint256 i = 0; i < blackListedTokens.length; i++) {
             IERC721A(nftContract).transferFrom(address(this), msg.sender, blackListedTokens[i]);
         }
