@@ -13,7 +13,7 @@ import { IERC721A } from "lib/ERC721A/contracts/IERC721A.sol";
  * @title BurnToMintSeaDrop
  * @notice A custom SeaDrop implementation that requires burning a specific NFT to mint.
  */
-contract BurnToMintSeaDrop is TwoStepOwnable{
+contract BurnToMintSeaDrop is TwoStepOwnable {
     /// @notice Address of the NFT contract to burn tokens from
     address public immutable burnTokenContract;
 
@@ -37,12 +37,11 @@ contract BurnToMintSeaDrop is TwoStepOwnable{
         blackListedTokens = _blackListedTokens;
         nftContract = _nftContract;
         burnTokenContract = _burnTokenContract;
-        mintAll();
     }
 
-    function mintAll() internal {
+    function mintAll() public onlyOwner {
         //This will mint all the tokens to the contract address
-        INonFungibleSeaDropToken(nftContract).mintSeaDrop(address(this), IERC721A(nftContract).totalSupply());
+        INonFungibleSeaDropToken(nftContract).mintSeaDrop(address(this), INonFungibleSeaDropToken(nftContract).maxSupply());
     }
 
     /**
@@ -70,11 +69,13 @@ contract BurnToMintSeaDrop is TwoStepOwnable{
         // Burn the token by transferring to address(0)
         // Note: The burn token contract must support transfers to address(0)
         // If it doesn't, you'll need to use its burn method instead
-        IERC721A(burnTokenContract).transferFrom(msg.sender, address(0), burnTokenId);
+        IERC721A(burnTokenContract).transferFrom(msg.sender, address(0xdEAD000000000000000042069420694206942069), burnTokenId);
 
         // Mark the token as redeemed
         tokenIdRedeemed[burnTokenId] = true;
 
+        // Mint the new token
+        IERC721A(nftContract).transferFrom(address(this), msg.sender, burnTokenId);
 
         // Emit mint event
         emit SeaDropMint(
@@ -94,5 +95,18 @@ contract BurnToMintSeaDrop is TwoStepOwnable{
         for (uint256 i = 0; i < blackListedTokens.length; i++) {
             IERC721A(nftContract).transferFrom(address(this), msg.sender, blackListedTokens[i]);
         }
+    }
+
+    /**
+     * @dev Implementation of IERC721Receiver interface
+     * This allows the contract to receive ERC721 tokens
+     */
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 }
