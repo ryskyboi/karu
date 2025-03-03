@@ -9,6 +9,7 @@ import { TwoStepOwnable } from "lib/utility-contracts/src/TwoStepOwnable.sol";
 
 import { IERC721A } from "lib/ERC721A/contracts/IERC721A.sol";
 
+
 /**
  * @title BurnToMintSeaDrop
  * @notice A custom SeaDrop implementation that requires burning a specific NFT to mint.
@@ -21,9 +22,6 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
     address public immutable nftContract;
 
     uint256[] public blackListedTokens;
-
-    /// @notice Mapping to track if a token has been minted using this mechanism
-    mapping(uint256 => bool) public tokenIdRedeemed;
 
     /// @notice Event emitted when a token is minted
     event SeaDropMint(
@@ -44,48 +42,43 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
         INonFungibleSeaDropToken(nftContract).mintSeaDrop(address(this), INonFungibleSeaDropToken(nftContract).maxSupply());
     }
 
+    function _offset() internal pure returns (uint256) {
+        // Hardcoded as cannot be fetched from the contract
+        return 1;
+    }
+
+    function isBlackListed(uint256 tokenId) public view returns (bool) {
+        for (uint256 i = 0; i < blackListedTokens.length; i++) {
+            if (blackListedTokens[i] == tokenId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @notice Mint by burning a specific NFT
      * @dev This is the only mint method that will be enabled
-     * @param burnTokenId      The ID of the token to burn
      */
-    function mintByBurning(
-        uint256 burnTokenId
-    ) external {
+    function airdrop() external onlyOwner(){
         // Check that the token hasn't already been redeemed
-        require(!tokenIdRedeemed[burnTokenId], "Token already redeemed");
 
-        // Check that the token is not blacklisted
-        for (uint256 i = 0; i < blackListedTokens.length; i++) {
-            require(burnTokenId != blackListedTokens[i], "Token is blacklisted");
+        for (uint256 tokenId = _offset(); tokenId < INonFungibleSeaDropToken(burnTokenContract).maxSupply() + _offset(); tokenId++) {
+            if (isBlackListed(tokenId)) {
+                continue;
+            }
+            address owner = IERC721A(burnTokenContract).ownerOf(tokenId);
+            IERC721A(nftContract).transferFrom(address(this), owner, tokenId);
+            // Emit mint event
+            emit SeaDropMint(
+                nftContract,
+                owner,
+                tokenId
+            );
         }
-
-        // Check that the caller owns the token to be burned
-        require(
-            IERC721A(burnTokenContract).ownerOf(burnTokenId) == msg.sender,
-            "Not token owner"
-        );
-
-        // Burn the token by transferring to address(0)
-        // Note: The burn token contract must support transfers to address(0)
-        // If it doesn't, you'll need to use its burn method instead
-        IERC721A(burnTokenContract).transferFrom(msg.sender, address(0xdEAD000000000000000042069420694206942069), burnTokenId);
-
-        // Mark the token as redeemed
-        tokenIdRedeemed[burnTokenId] = true;
-
-        // Mint the new token
-        IERC721A(nftContract).transferFrom(address(this), msg.sender, burnTokenId);
-
-        // Emit mint event
-        emit SeaDropMint(
-            nftContract,
-            msg.sender,
-            burnTokenId
-        );
     }
 
-    function setBlackListedTokens(uint256[] memory _blackListedTokens) external {
+    function setBlackListedTokens(uint256[] memory _blackListedTokens) external onlyOwner{
         blackListedTokens = _blackListedTokens;
     }
 
