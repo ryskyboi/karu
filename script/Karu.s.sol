@@ -30,9 +30,9 @@ contract DeployKaru is Script {
 
         // Deploy the new Karu contract
         ERC721SeaDrop karu = new ERC721SeaDrop(
-            "K-16 a.k.a KARU",  // Name 
-            "KARU",             // Symbol
-            new address[](0)    // No initial seaDrops
+            "K-16 a.k.a KARU", // Name
+            "KARU", // Symbol
+            new address[](0) // No initial seaDrops
         );
         console2.log("New Karu contract deployed at:", address(karu));
 
@@ -41,11 +41,7 @@ contract DeployKaru is Script {
         console2.log("Max supply set to: 1600");
 
         // Deploy BurnToMintSeaDrop contract
-        BurnToMintSeaDrop minter = new BurnToMintSeaDrop(
-            originalKaruAddress,
-            address(karu),
-            blackListedTokens
-        );
+        BurnToMintSeaDrop minter = new BurnToMintSeaDrop(originalKaruAddress, address(karu), blackListedTokens);
         console2.log("Minter contract deployed at:", address(minter));
 
         // Allow minter contract to mint on Karu
@@ -62,8 +58,8 @@ contract DeployKaru is Script {
 
         // Set royalty info
         ISeaDropTokenContractMetadata.RoyaltyInfo memory royaltyInfo = ISeaDropTokenContractMetadata.RoyaltyInfo({
-            royaltyAddress: 0xdEAD000000000000000042069420694206942069,  // Burn address
-            royaltyBps: 0              // 0% royalty
+            royaltyAddress: 0xdEAD000000000000000042069420694206942069, // Burn address
+            royaltyBps: 0 // 0% royalty
         });
         karu.setRoyaltyInfo(royaltyInfo);
 
@@ -71,7 +67,7 @@ contract DeployKaru is Script {
         // karu.transferOwnership(newOwner);
         // minter.transferOwnership(newOwner);
 
-        // Pre-mint all tokens to the minter contract 
+        // Pre-mint all tokens to the minter contract
         minter.mintAll();
         console2.log("All tokens minted to minter contract");
 

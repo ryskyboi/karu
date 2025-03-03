@@ -28,8 +28,8 @@ contract MintTest is Test {
         TestOriginalKaru.updateAllowedSeaDrop(allowedSeaDrops);
         // Mint some test NFTs to our test users
 
-        TestOriginalKaru.mintSeaDrop(testUser, 5);  // mint tokens 1-5 to testUser
-        TestOriginalKaru.mintSeaDrop(testUser2, 1595);  // mint tokens 6-1600 to testUser2
+        TestOriginalKaru.mintSeaDrop(testUser, 5); // mint tokens 1-5 to testUser
+        TestOriginalKaru.mintSeaDrop(testUser2, 1595); // mint tokens 6-1600 to testUser2
     }
 
     function setUpKaru() public {
@@ -57,7 +57,7 @@ contract MintTest is Test {
 
     function test_UpdateRoyalty() public {
         ISeaDropTokenContractMetadata.RoyaltyInfo memory newInfo = ISeaDropTokenContractMetadata.RoyaltyInfo({
-            royaltyAddress: address(0x123),  // Need to figure out where to point this
+            royaltyAddress: address(0x123), // Need to figure out where to point this
             royaltyBps: 0
         });
         Karu.setRoyaltyInfo(newInfo);
@@ -69,7 +69,6 @@ contract MintTest is Test {
         ERC721SeaDropStructsErrorsAndEvents.MultiConfigureStruct memory config;
         // Only set the values we care about
         config.baseURI = "ipfs://bafkreibhwww25kifa4tfvsrl2fyliovnkadlefyp4lvtua4h6d2k344xny";
-
 
         Karu.multiConfigure(config);
         // Karu.setTransferValidator(0x721C002B0059009a671D00aD1700c9748146cd1B);
@@ -88,7 +87,6 @@ contract MintTest is Test {
             assert(Karu.ownerOf(i) == TestOriginalKaru.ownerOf(i));
         }
     }
-
 
     function test_withdrawBlacklistedTokens() public {
         // Let's add a clear test that verifies blacklisted tokens can't be withdrawn

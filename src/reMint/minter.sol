@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import {
-    INonFungibleSeaDropToken
-} from "../interfaces/INonFungibleSeaDropToken.sol";
+import {INonFungibleSeaDropToken} from "../interfaces/INonFungibleSeaDropToken.sol";
 
-import { TwoStepOwnable } from "lib/utility-contracts/src/TwoStepOwnable.sol";
+import {TwoStepOwnable} from "lib/utility-contracts/src/TwoStepOwnable.sol";
 
-import { IERC721A } from "lib/ERC721A/contracts/IERC721A.sol";
-
+import {IERC721A} from "lib/ERC721A/contracts/IERC721A.sol";
 
 /**
  * @title BurnToMintSeaDrop
@@ -24,14 +21,10 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
     uint256[] public blackListedTokens;
 
     /// @notice Event emitted when a token is minted
-    event SeaDropMint(
-        address indexed nftContract,
-        address indexed minter,
-        uint256 tokenId
-    );
+    event SeaDropMint(address indexed nftContract, address indexed minter, uint256 tokenId);
 
     /// @dev Constructor to set the burn token contract address
-    constructor(address _burnTokenContract, address  _nftContract, uint256[] memory _blackListedTokens) {
+    constructor(address _burnTokenContract, address _nftContract, uint256[] memory _blackListedTokens) {
         blackListedTokens = _blackListedTokens;
         nftContract = _nftContract;
         burnTokenContract = _burnTokenContract;
@@ -39,7 +32,9 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
 
     function mintAll() public onlyOwner {
         //This will mint all the tokens to the contract address
-        INonFungibleSeaDropToken(nftContract).mintSeaDrop(address(this), INonFungibleSeaDropToken(nftContract).maxSupply());
+        INonFungibleSeaDropToken(nftContract).mintSeaDrop(
+            address(this), INonFungibleSeaDropToken(nftContract).maxSupply()
+        );
     }
 
     function _offset() internal pure returns (uint256) {
@@ -60,25 +55,25 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
      * @notice Mint by burning a specific NFT
      * @dev This is the only mint method that will be enabled
      */
-    function airdrop() external onlyOwner(){
+    function airdrop() external onlyOwner {
         // Check that the token hasn't already been redeemed
 
-        for (uint256 tokenId = _offset(); tokenId < INonFungibleSeaDropToken(burnTokenContract).maxSupply() + _offset(); tokenId++) {
+        for (
+            uint256 tokenId = _offset();
+            tokenId < INonFungibleSeaDropToken(burnTokenContract).maxSupply() + _offset();
+            tokenId++
+        ) {
             if (isBlackListed(tokenId)) {
                 continue;
             }
             address owner = IERC721A(burnTokenContract).ownerOf(tokenId);
             IERC721A(nftContract).transferFrom(address(this), owner, tokenId);
             // Emit mint event
-            emit SeaDropMint(
-                nftContract,
-                owner,
-                tokenId
-            );
+            emit SeaDropMint(nftContract, owner, tokenId);
         }
     }
 
-    function setBlackListedTokens(uint256[] memory _blackListedTokens) external onlyOwner{
+    function setBlackListedTokens(uint256[] memory _blackListedTokens) external onlyOwner {
         blackListedTokens = _blackListedTokens;
     }
 
@@ -92,12 +87,7 @@ contract BurnToMintSeaDrop is TwoStepOwnable {
      * @dev Implementation of IERC721Receiver interface
      * This allows the contract to receive ERC721 tokens
      */
-    function onERC721Received(
-        address,
-        address,
-        uint256,
-        bytes calldata
-    ) external pure returns (bytes4) {
+    function onERC721Received(address, address, uint256, bytes calldata) external pure returns (bytes4) {
         return this.onERC721Received.selector;
     }
 }
