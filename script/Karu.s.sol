@@ -21,7 +21,12 @@ contract DeployKaru is Script {
         vm.startBroadcast();
 
         // Set up black listed tokens - replace with actual blacklisted IDs if needed
-        blackListedTokens = new uint256[](0);
+        blackListedTokens = new uint256[](5);
+        blackListedTokens[0] = 145;
+        blackListedTokens[0] = 137;
+        blackListedTokens[0] = 132;
+        blackListedTokens[0] = 119;
+        blackListedTokens[0] = 117;
 
         originalKaruAddress = 0x409EF8712741258cDA2aeD4577353cd3e7E44a34;
         // If you need to add blacklisted tokens, uncomment and modify:
@@ -70,9 +75,6 @@ contract DeployKaru is Script {
         // Pre-mint all tokens to the minter contract
         minter.mintAll();
         console2.log("All tokens minted to minter contract");
-
-        minter.airdrop();
-        console2.log("Airdrop complete");
 
         vm.stopBroadcast();
 
